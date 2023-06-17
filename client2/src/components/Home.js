@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import Post from "./Post";
 
+/* import Signin from "./Signin";
+import Signup from "./Signup"; */
+
 export default function Home() {
   const [posts, setPosts] = useState(null);
   useEffect(() => {
@@ -26,6 +29,12 @@ export default function Home() {
 
   return (
     <div>
+      {/*   <header>
+        <nav>
+          <Signin />
+          <Signup />
+        </nav>
+      </header> */}
       {posts?.map((post) => (
         <Post post={post} />
       ))}

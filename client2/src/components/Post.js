@@ -9,7 +9,7 @@ export default function Post({ post }) {
     async function getComments(post) {
       try {
         let response = await fetch(
-          `http://localhost:3000/posts/${post.id}/comments`
+          `http://localhost:3000/posts/${post._id}/comments`
         );
         if (!response.ok) {
           throw new Error("Request failed");
@@ -34,7 +34,7 @@ export default function Post({ post }) {
         <p>{post.timestamp}</p>
       </div>
       <p>{post.content}</p>
-      <Modal comments={comments} />
+      <Modal comments={comments} post={post} />
     </div>
   );
 }
