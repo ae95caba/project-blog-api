@@ -7,6 +7,7 @@ const posts = [
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     userId: "randomUser1",
     published: true,
+    timestamp: new Date(),
     id: 1,
   },
   {
@@ -15,6 +16,7 @@ const posts = [
       "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     userId: "randomUser2",
     published: false,
+    timestamp: new Date(),
     id: 2,
   },
 
@@ -24,6 +26,7 @@ const posts = [
       "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
     userId: "randomUser3",
     published: true,
+    timestamp: new Date(),
     id: 3,
   },
   {
@@ -32,6 +35,7 @@ const posts = [
       "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
     userId: "randomUser4",
     published: true,
+    timestamp: new Date(),
     id: 4,
   },
   {
@@ -41,6 +45,7 @@ const posts = [
       "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.",
     userId: "randomUser5",
     published: false,
+    timestamp: new Date(),
   },
 ];
 

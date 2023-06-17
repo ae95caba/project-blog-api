@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   cors({
-    origin: "http://10.0.2.15:5500", // Replace with your frontend URL
+    origin: "http://localhost:3001", // Replace with your frontend URL
   })
 );
 
