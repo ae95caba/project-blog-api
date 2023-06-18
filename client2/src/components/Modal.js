@@ -55,7 +55,8 @@ export default function Modal({ comments, post }) {
           {comments?.map((comment) => (
             <li>
               <div className="comment">
-                <p>{comment?.content}</p> <p>By : {comment?.username}</p>
+                <p>{comment?.content}</p> <p>By : {comment?.username}</p>{" "}
+                <p>{comment?.timestamp}</p>
               </div>
             </li>
           ))}

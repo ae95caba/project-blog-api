@@ -50,7 +50,8 @@ exports.post_create = [
 
 exports.post_list = asyncHandler(async (req, res, next) => {
   const posts = await Post.find({}).exec();
-  res.json(posts);
+  const publishedPosts = posts.filter((post) => post.published);
+  res.json(publishedPosts);
 });
 
 exports.post_detail = asyncHandler(async (req, res, next) => {
