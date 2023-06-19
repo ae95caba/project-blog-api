@@ -27,6 +27,7 @@ export default function Signup() {
     let response = await fetch(`http://localhost:3000/signup`, requestOptions);
 
     if (response.ok) {
+      alert("account created");
       closeDialog();
     } else {
       alert(response.statusText);
