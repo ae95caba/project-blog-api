@@ -12,20 +12,19 @@ export default function Home() {
   ////////if valid
   //////////////set isUserOnline to true
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = JSON.parse(localStorage.getItem("jwtToken")).token;
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`, // Add the JWT to the Authorization header
+      },
+    };
     if (token !== null) {
       // check if token is valid
       //change state
-      async function getPosts() {
+      async function checkTokenValidity() {
         try {
-          const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              username: usernameRef.current.value,
-              password: passwordRef.current.value,
-            }),
-          };
           let response = await fetch(
             `http://localhost:3000/auth`,
             requestOptions
@@ -42,7 +41,7 @@ export default function Home() {
         }
       }
 
-      getPosts();
+      checkTokenValidity();
     }
   }, []);
 

@@ -38,8 +38,8 @@ export default function AdminDashboard() {
       <h1>admin shasboard</h1>
 
       <div id="posts">
-        {posts?.map((post) => (
-          <div>{post.title}</div>
+        {posts?.map((post, index) => (
+          <div key={index}>{post.title}</div>
         ))}
       </div>
     </div>
