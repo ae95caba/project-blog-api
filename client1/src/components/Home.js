@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import Signup from "./Signup";
 import Signin from "./Signin";
 import AdminDashboard from "./AdminDashboard";
+
 export default function Home() {
   const [isUserOnline, setIsUserOnline] = useState(false);
-  const [posts, setPosts] = useState(null);
 
   //at page load
   //if token at localStorage
@@ -12,17 +12,20 @@ export default function Home() {
   ////////if valid
   //////////////set isUserOnline to true
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("jwtToken")).token;
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`, // Add the JWT to the Authorization header
-      },
-    };
-    if (token !== null) {
+    const token = localStorage.getItem("jwtToken")
+      ? JSON.parse(localStorage.getItem("jwtToken"))?.token
+      : undefined;
+
+    if (token) {
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`, // Add the JWT to the Authorization header
+        },
+      };
       // check if token is valid
-      //change state
+
       async function checkTokenValidity() {
         try {
           let response = await fetch(
@@ -30,6 +33,7 @@ export default function Home() {
             requestOptions
           );
           if (!response.ok) {
+            setIsUserOnline(false);
             throw new Error("Request failed");
           }
           console.log("auth succeded, setting user state to online!");
@@ -38,10 +42,13 @@ export default function Home() {
           // Process the data or perform other operations
         } catch (error) {
           console.error("Error:", error);
+          setIsUserOnline(false);
         }
       }
 
       checkTokenValidity();
+    } else {
+      setIsUserOnline(false);
     }
   }, []);
 
@@ -53,8 +60,20 @@ export default function Home() {
           <Signup /> <Signin setIsUserOnline={setIsUserOnline} />
         </div>
       ) : (
-        <AdminDashboard />
+        <div>
+          <LogoutButton setIsUserOnline={setIsUserOnline} />
+          <AdminDashboard />
+        </div>
       )}
     </div>
   );
+}
+
+function LogoutButton({ setIsUserOnline }) {
+  function logout() {
+    localStorage.setItem("jwtToken", null);
+    setIsUserOnline(false);
+  }
+
+  return <button onClick={logout}>Logout</button>;
 }

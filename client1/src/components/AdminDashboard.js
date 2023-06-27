@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Post from "./Post.js";
 
 //fetches posts from api
 export default function AdminDashboard() {
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
 
       <div id="posts">
         {posts?.map((post, index) => (
-          <div key={index}>{post.title}</div>
+          <Post post={post} index={index} />
         ))}
       </div>
     </div>

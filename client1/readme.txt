@@ -21,4 +21,11 @@ main page
 					displays error message
 
 
-					
+					////////////////////////////
+
+					when the user signs if the user match, a token is saved to
+					 local storage and user is set to online
+
+
+						when page loads useEffect runs checking validity of
+						 localstorage token if any,
