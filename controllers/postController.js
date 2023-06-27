@@ -1,5 +1,6 @@
 const Post = require("../models/post");
 const asyncHandler = require("express-async-handler");
+const jwt = require("jsonwebtoken");
 
 const { body, validationResult } = require("express-validator");
 
@@ -48,11 +49,38 @@ exports.post_create = [
   }),
 ];
 
-exports.post_list = asyncHandler(async (req, res, next) => {
-  const posts = await Post.find({}).exec();
-  const publishedPosts = posts.filter((post) => post.published);
-  res.json(publishedPosts);
-});
+function getBearerHeaderToSetTokenStringOnReq(req, res, next) {
+  const bearerHeader = req.headers?.authorization;
+  if (typeof bearerHeader !== "undefined") {
+    //bearer header format : Bearer <token>
+
+    const bearer = bearerHeader.split(" ");
+
+    const bearerToken = bearer[1];
+
+    req.token = bearerToken;
+    next();
+  } else {
+    next();
+  }
+}
+
+exports.post_list = [
+  getBearerHeaderToSetTokenStringOnReq,
+  asyncHandler(async (req, res, next) => {
+    const posts = await Post.find({}).exec();
+    //authData is what i passed in the jwt.sign
+
+    jwt.verify(req.token, "secretkey", (err, authData) => {
+      if (err) {
+        const publishedPosts = posts.filter((post) => post.published);
+        res.json(publishedPosts);
+      } else {
+        res.json(posts);
+      }
+    });
+  }),
+];
 
 exports.post_detail = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
