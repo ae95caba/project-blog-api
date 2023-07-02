@@ -89,7 +89,7 @@ export default function AdminDashboard() {
             placeholder="content"
             required
           />
-          <input type="checkbox" name="published" required ref={publishedRef} />
+          <input type="checkbox" name="published" ref={publishedRef} />
           <button>Create post</button>
         </form>
       </div>

@@ -8,18 +8,14 @@ router.get("/posts/:postid/comments", comment_controller.comment_list);
 
 router.post("/posts/:postid/comments", comment_controller.comment_create);
 
-router.get("/posts/:postid/comments/:commentid", function (req, res, next) {
-  console.log(`the comment id is :${+req.params.commentid}`);
-  function findCommentByCommentId(commentId, comments) {
-    let result;
-    comments.forEach((comment) => {
-      if (comment.id === commentId) {
-        result = comment;
-      }
-    });
-    return result;
-  }
-  res.json(findCommentByCommentId(+req.params.commentid, comments));
-});
+router.get(
+  "/posts/:postid/comments/:commentid",
+  comment_controller.comment_detail
+);
+
+router.delete(
+  "/posts/:postid/comments/:commentid",
+  comment_controller.comment_delete
+);
 
 module.exports = router;
