@@ -10,14 +10,10 @@ exports.post_create = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("timestamp", "timestamp must be specified")
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
 
   body("published", "post must be specified")
     .trim()
-    .isLength({ min: 1 })
+
     .escape(),
   body("title", "title must be specified").trim().isLength({ min: 1 }).escape(),
 
@@ -32,8 +28,8 @@ exports.post_create = [
     const post = new Post({
       content: req.body.content,
       title: req.body.title,
-      timestamp: req.body.timestamp,
-      published: req.body.published,
+      timestamp: new Date(),
+      published: req.body.published ? true : false,
     });
 
     if (!errors.isEmpty()) {
@@ -81,6 +77,57 @@ exports.post_list = [
     });
   }),
 ];
+
+exports.post_update = [
+  // Validate body and sanitize fields.
+  body("content", "content must be specified")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  body("published", "post must be specified")
+    .trim()
+    .isBoolean()
+
+    .escape(),
+  body("timestamp", "timestamp must be specified")
+    .trim()
+    .isISO8601()
+    .toDate()
+    .escape(),
+
+  body("title", "title must be specified").trim().isLength({ min: 1 }).escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const updatedPost = new Post({
+      content: req.body.content,
+      title: req.body.title,
+      timestamp: req.body.timestamp,
+      published: req.body.published,
+      _id: req.params.id, // This is required, or a new ID will be assigned!
+    });
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(422).json({ error: "Validation failed" });
+    } else {
+      try {
+        console.log("should 200");
+        await Post.findByIdAndUpdate(req.params.id, updatedPost, {});
+        res.status(200).json({});
+      } catch (error) {
+        console.log("Error occurred bro:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    }
+  }),
+];
+
+exports.post_delete = asyncHandler(async (req, res, next) => {
+  await Post.findByIdAndDelete(req.params.id);
+
+  res.status(200).json({ error: "HOlaaaa" });
+});
 
 exports.post_detail = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
