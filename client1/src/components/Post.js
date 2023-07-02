@@ -38,10 +38,13 @@ export default function Post({ post, index, getPosts }) {
 
   async function deletePost() {
     try {
-      console.log("delete post function runing");
+      const token = JSON.parse(localStorage.getItem("jwtToken")).token;
       const requestOptions = {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
       };
 
       let response = await fetch(
@@ -56,7 +59,7 @@ export default function Post({ post, index, getPosts }) {
         getPosts();
         console.log("post deleted ");
       } else {
-        alert(`response not ok : ${response.statusTex}`);
+        alert(`response not ok : ${response.statusText}`);
         console.log("post not deleted");
       }
     } catch (error) {
@@ -66,9 +69,13 @@ export default function Post({ post, index, getPosts }) {
 
   async function editPost(options = {}) {
     try {
+      const token = JSON.parse(localStorage.getItem("jwtToken")).token;
       const fetchOptions = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           content: options.content ? options.content : post.content,
           published:

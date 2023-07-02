@@ -34,9 +34,13 @@ export default function AdminDashboard() {
   async function createPost(e) {
     e.preventDefault();
     try {
+      const token = JSON.parse(localStorage.getItem("jwtToken")).token;
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           content: contentRef.current.value,
           title: titleRef.current.value,

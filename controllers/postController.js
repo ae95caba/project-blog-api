@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 
 exports.post_create = [
+  getBearerHeaderToSetTokenStringOnReq,
   // Validate body and sanitize fields.
   body("content", "content must be specified")
     .trim()
@@ -18,7 +19,8 @@ exports.post_create = [
   body("title", "title must be specified").trim().isLength({ min: 1 }).escape(),
 
   // Process request after validation and sanitization.
-  asyncHandler(async (req, res, next) => {
+
+  async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
@@ -38,11 +40,16 @@ exports.post_create = [
       res.status(422).json({ error: "Validation failed" });
       return;
     } else {
-      // Data from form is valid
-      await post.save();
-      res.status(200).json({ post });
+      try {
+        // Data from form is valid
+        jwt.verify(req.token, "secretkey");
+        await post.save();
+        res.status(200).json({ post });
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }),
+  },
 ];
 
 function getBearerHeaderToSetTokenStringOnReq(req, res, next) {
@@ -79,6 +86,7 @@ exports.post_list = [
 ];
 
 exports.post_update = [
+  getBearerHeaderToSetTokenStringOnReq,
   // Validate body and sanitize fields.
   body("content", "content must be specified")
     .trim()
@@ -98,7 +106,7 @@ exports.post_update = [
 
   body("title", "title must be specified").trim().isLength({ min: 1 }).escape(),
 
-  asyncHandler(async (req, res, next) => {
+  async (req, res, next) => {
     const updatedPost = new Post({
       content: req.body.content,
       title: req.body.title,
@@ -112,7 +120,7 @@ exports.post_update = [
       res.status(422).json({ error: "Validation failed" });
     } else {
       try {
-        console.log("should 200");
+        jwt.verify(req.token, "secretkey");
         await Post.findByIdAndUpdate(req.params.id, updatedPost, {});
         res.status(200).json({});
       } catch (error) {
@@ -120,14 +128,23 @@ exports.post_update = [
         res.status(500).json({ error: "Internal Server Error" });
       }
     }
-  }),
+  },
 ];
 
-exports.post_delete = asyncHandler(async (req, res, next) => {
-  await Post.findByIdAndDelete(req.params.id);
-
-  res.status(200).json({ error: "HOlaaaa" });
-});
+exports.post_delete = [
+  getBearerHeaderToSetTokenStringOnReq,
+  async (req, res, next) => {
+    try {
+      //if v erification vails , an error will be thrown
+      jwt.verify(req.token, "secretkey");
+      await Post.findByIdAndDelete(req.params.id);
+      res.status(200).json({ message: "post deleted" });
+    } catch (error) {
+      console.log(`error : ${error}`);
+      next(error);
+    }
+  },
+];
 
 exports.post_detail = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
